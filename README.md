@@ -31,7 +31,8 @@ This is an example of the algorithm container that you can use to submit your so
 ## 3.Packing algorithm into a docker container image
 To use this algorithm as a template for submitting your entry to the challenge, follow these steps. First, open the `process.py` file and make the necessary changes marked with `TODO`. When testing your code locally, set `execute_in_docker=False`, but don't forget to switch it back to `execute_in_docker=True` before running the code in the docker container.
 
-If your algorithm requires additional libraries or files, you can modify the requirements.txt file and the Dockerfile as needed. This will ensure that the required files and folders are copied appropriately.
+If your algorithm requires additional libraries or files, you can modify the requirements.txt file and the Dockerfile as needed. This will ensure that the required files and folders are copied appropriately. Check out the graphic description of the MIDOG Challenge below.
+
 
 ## 4.Buliding container
 - To test if all dependencies are met, you should run the `build.sh` to build the docker container. 
