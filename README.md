@@ -1,6 +1,7 @@
 # Reference Algorithm Container for LDCTIQAC2023
 
-This docker image contains a reference implementation that serve as a template for you to implementat your own algorithm for submission at LDCTIQAC2023
+This docker image contains a reference implementation that serve as a template for you to implementat your own algorithm for submission at LDCTIQAC2023.
+This repository was created by referring to the [MIDOG challenge](https://github.com/DeepPathology/MIDOG_reference_docker#overview).
 
 ## Content:
 1.Prerequisites
