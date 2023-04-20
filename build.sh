@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
-docker build -t mitosisdetection "$SCRIPTPATH"
+docker build -t iqaregression "$SCRIPTPATH"

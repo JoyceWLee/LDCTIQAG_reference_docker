@@ -2,4 +2,4 @@
 
 ./build.sh
 
-docker save mitosisdetection | gzip -c > MitosisDetection.tar.gz
+docker save iqaregression | gzip -c > IQARegression.tar.gz

@@ -103,3 +103,7 @@ ENV/
 
 # Pycharm
 .idea/
+
+#
+model_weights/resnet18.pth
+IQARegression.tar.gz

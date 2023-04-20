@@ -1,1 +1,1 @@
-docker build -t mitosisdetection .
+docker build -t iqaregression .

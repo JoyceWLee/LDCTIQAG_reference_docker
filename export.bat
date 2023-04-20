@@ -1,3 +1,3 @@
 call .\build.bat
 
-docker save mitosisdetection > MitosisDetection.tar
+docker save iqaregression > IQARegression.tar

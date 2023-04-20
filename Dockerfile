@@ -25,7 +25,6 @@ COPY --chown=algorithm:algorithm model/ /opt/algorithm/model/
 COPY --chown=algorithm:algorithm util/ /opt/algorithm/util/
 COPY --chown=algorithm:algorithm model_weights/ /opt/algorithm/checkpoints/
 COPY --chown=algorithm:algorithm process.py /opt/algorithm/
-COPY --chown=algorithm:algorithm detection.py /opt/algorithm/
 
 # Install required python packages via pip - you may adapt the requirements.txt to your needs
 RUN python -m pip install --user -rrequirements.txt
@@ -36,7 +35,7 @@ ENTRYPOINT python -m process $0 $@
 ## ALGORITHM LABELS ##
 
 # These labels are required
-LABEL nl.diagnijmegen.rse.algorithm.name=MitosisDetection
+LABEL nl.diagnijmegen.rse.algorithm.name=IQARegression
 
 # These labels are required and describe what kind of hardware your algorithm requires to run.
 LABEL nl.diagnijmegen.rse.algorithm.hardware.cpu.count=2

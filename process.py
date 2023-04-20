@@ -3,8 +3,6 @@ from pathlib import Path
 
 from pandas import DataFrame
 import torch
-import torchvision
-from util.nms_WSI import nms
 
 from evalutils import DetectionAlgorithm
 from evalutils.validators import (
@@ -14,14 +12,15 @@ from evalutils.validators import (
 import evalutils
 
 import json
+import numpy as np
 
-from detection import MyMitosisDetection
-# TODO: Adapt to MIDOG 2022 reference algos
+from model.model import ResNet18
+
 
 # TODO: We have this parameter to adapt the paths between local execution and execution in docker. You can use this flag to switch between these two modes.
 execute_in_docker = True
 
-class Mitosisdetection(DetectionAlgorithm):
+class IQARegression(DetectionAlgorithm):
     def __init__(self):
         super().__init__(
             validators=dict(
@@ -30,84 +29,59 @@ class Mitosisdetection(DetectionAlgorithm):
                     UniquePathIndicesValidator(),
                 )
             ),
-            input_path = Path("/input/images/histopathology-roi-cropout/") if execute_in_docker else Path("./test/"),
-            output_file = Path("/output/mitotic-figures.json") if execute_in_docker else Path("./output/mitotic-figures.json")
+            input_path = Path("/input/images/synthetic-ct/") if execute_in_docker else Path("./test/"),
+            output_file = Path("/output/image-quality-scores.json") if execute_in_docker else Path("./output/image-quality-scores.json")
         )
         # TODO: This path should lead to your model weights
         if execute_in_docker:
-           path_model = "/opt/algorithm/checkpoints/RetinaNetDA.pth"
+           path_model = "/opt/algorithm/checkpoints/resnet18.pth"
         else:
-            path_model = "./model_weights/RetinaNetDA.pth"
+            path_model = "./model_weights/resnet18.pth"
 
-        self.size = 512
-        self.batchsize = 10
-        self.detect_thresh = 0.64
-        self.nms_thresh = 0.4
-        self.level = 0
-        # TODO: You may adapt this to your model/algorithm here.
-        #####################################################################################
-        # Note: As of MIDOG 2022, the format has changed to enable calculation of the mAP. ##
-        #####################################################################################
+        # TODO: Load your model
+        self.model = ResNet18()
 
-        # Use NMS threshold as detection threshold for now so we can forward sub-threshold detections to the calculations of the mAP
-
-        self.md = MyMitosisDetection(path_model, self.size, self.batchsize, detect_threshold=self.nms_thresh, nms_threshold=self.nms_thresh)
-        load_success = self.md.load_model()
-        if load_success:
-            print("Successfully loaded model.")
+        self.model.load_state_dict(torch.load(path_model), strict=True)
+        print("Successfully loaded model.")
 
     def save(self):
         with open(str(self._output_file), "w") as f:
-            json.dump(self._case_results[0], f)
+            f.write(json.dumps(self._case_results[0], indent=4))
 
     def process_case(self, *, idx, case):
         # Load and test the image for this case
         input_image, input_image_file_path = self._load_input_image(case=case)
 
-        # Detect and score candidates
+        # score candidates
         scored_candidates = self.predict(input_image=input_image)
 
         # Write resulting candidates to result.json for this case
-        return dict(type="Multiple points", points=scored_candidates, version={ "major": 1, "minor": 0 })
+        return scored_candidates
 
     def predict(self, *, input_image: SimpleITK.Image) -> DataFrame:
         # Extract a numpy array with image data from the SimpleITK Image
         image_data = SimpleITK.GetArrayFromImage(input_image)
 
-        # TODO: This is the part that you want to adapt to your submission.
+        model = self.model
+
+        image_data = SimpleITK.GetArrayFromImage(input_image)
+        
+        if len(image_data.shape) == 2:
+            image_data = np.expand_dims(image_data, axis=0)
+
         with torch.no_grad():
-            result_boxes = self.md.process_image(image_data)
 
-            # perform nms per image:
-            print("All computations done, nms as a last step")
-            result_boxes = nms(result_boxes, self.nms_thresh)
+            predictions = []
 
-        candidates = list()
+            for i in range(image_data.shape[0]):
+                image = torch.tensor(np.expand_dims(np.expand_dims(image_data[i,:,:], axis=0), axis=0))
+                prediction = model(image)
+                prediction = float(prediction.cpu().numpy()[0][0])
+                predictions.append(prediction)
 
-        classnames = ['non-mitotic figure', 'mitotic figure']
-
-        for i, detection in enumerate(result_boxes):
-            # our prediction returns x_1, y_1, x_2, y_2, prediction, score -> transform to center coordinates
-            x_1, y_1, x_2, y_2, prediction, score = detection
-            coord = tuple(((x_1 + x_2) / 2, (y_1 + y_2) / 2))
-
-            # For the test set, we expect the coordinates in millimeters - this transformation ensures that the pixel
-            # coordinates are transformed to mm - if resolution information is available in the .tiff image. If not,
-            # pixel coordinates are returned.
-            world_coords = input_image.TransformContinuousIndexToPhysicalPoint(
-                [c for c in coord]
-            )
-
-
-            # Expected syntax from evaluation container is:
-            # x-coordinate(centroid),y-coordinate(centroid),0, detection, score
-            # where detection should be 1 if score is above threshold and 0 else
-            candidates.append([*tuple(world_coords),0,int(score>self.detect_thresh), score])
-
-        result = [{"point": c[0:3], "probability": c[4], "name": classnames[c[3]] } for c in candidates]
-        return result
+        return predictions
 
 
 if __name__ == "__main__":
     # loads the image(s), applies DL detection model & saves the result
-    Mitosisdetection().process()
+    IQARegression().process()
