@@ -28,7 +28,19 @@ pip install evalutils
 ```
 ## 2.An overview of the structure of this example
 This is an example of the algorithm container that you can use to submit your solution to the challenge. The primary file in the container is `process.py`, which loads the model and generates predictions of image quality scores. The results are saved in the file `/output/image-quality-scores.json` as a list of floating-point numbers. Each output file contains 100 image quality scores, corresponding to a stack of 100 slice images that make up one test batch.
-
+```bash
+[
+    0.5701988935470581,
+    0.5592130422592163,
+    0.5694703459739685,
+    0.5438243746757507,
+    0.5854103565216064,
+    0.546486496925354,
+    0.5592964291572571,
+    ...
+]
+```
+    
 ## 3.Packing algorithm into a docker container image
 To use this algorithm as a template for submitting your entry to the challenge, follow these steps. First, open the `process.py` file and make the necessary changes marked with `TODO`. When testing your code locally, set `execute_in_docker=False`, but don't forget to switch it back to `execute_in_docker=True` before running the code in the docker container.
 
