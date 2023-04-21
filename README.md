@@ -51,7 +51,7 @@ If your algorithm requires additional libraries or files, you can modify the req
 ## 4.Buliding container
 - To test if all dependencies are met, you should run the `build.sh` to build the docker container. 
 ## 5.Testing container and gernerating the bundle for uploading your algorithm
-- To test your container, you can run `test.sh`. This will run the test image provided in the test folder though your model. It will check them against what you provide in `test/expexted_output.json`. Noted: this will initially not be equal to the demo detections in this reference.
+- To test your container, you can run `test.sh`. This will run the test image provided in the test folder though your model. It will check them against what you provide in `test/expexted_output.json`. Noted: this will initially not be equal to the demo prediction score in this reference.
 - To gerneate the bundle, you need to run the `export.sh` to generate the package of your docker with the extension **tar.gz**, which you can then upload to grand challenge to submit your algorithm.
 ## 6.Creating an algorithm on Grand Challenge and submitting the solution to LDCTIQAC2023 Challenge
 - In order to submit the docker container, you have to add an algorithm for you docker container, [add algorithm](https://ldctiqac2023.grand-challenge.org/evaluation/challenge/algorithms/create/).
