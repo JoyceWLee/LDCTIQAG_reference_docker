@@ -64,17 +64,20 @@ class IQARegression(DetectionAlgorithm):
 
         model = self.model
 
+        # image_data will be a stack of 500 test images (i.e. shape equal to (500, 512, 512))
         image_data = SimpleITK.GetArrayFromImage(input_image)
         
+        # when image shape is (512, 512). Do not change this code.
         if len(image_data.shape) == 2:
             image_data = np.expand_dims(image_data, axis=0)
 
         with torch.no_grad():
 
+            # predictions must be a list containing float values (500 float scores for each slice image)
             predictions = []
 
             for i in range(image_data.shape[0]):
-                image = torch.tensor(np.expand_dims(np.expand_dims(image_data[i,:,:], axis=0), axis=0))
+                image = torch.tensor(np.expand_dims(np.expand_dims(image_data[i,:,:], axis=0), axis=0)) # process one image
                 prediction = model(image)
                 prediction = float(prediction.cpu().numpy()[0][0])
                 predictions.append(prediction)
