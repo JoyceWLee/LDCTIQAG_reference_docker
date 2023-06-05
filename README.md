@@ -35,13 +35,13 @@ While this example consists of the same 100 stacked images, the actual test batc
 Using this example, the output file will contain 100 image quality scores, corresponding to a stack of 100 slice images that make up one test batch. For example:
 ```bash
 [
-    0.5701988935470581,
     0.5592130422592163,
-    0.5694703459739685,
-    0.5438243746757507,
-    0.5854103565216064,
-    0.546486496925354,
-    0.5592964291572571,
+    0.5592130422592163,
+    0.5592130422592163,
+    0.5592130422592163,
+    0.5592130422592163,
+    0.5592130422592163,
+    0.5592130422592163,
     ...
 ]
 ```
