@@ -47,7 +47,7 @@ Using this example, the output file will contain 100 image quality scores, corre
 ```
     
 ## 3.Packing algorithm into a docker container image
-To use this algorithm as a template for submitting your entry to the challenge, follow these steps. First, open the `process.py` file and make the necessary changes marked with `TODO`. In general, there should be no problem with the submission if you only make changes to the code where it is marked with TODO. When testing your code locally, set `execute_in_docker=False`, but don't forget to switch it back to `execute_in_docker=True` before running the code in the docker container.
+To use this algorithm as a template for submitting your entry to the challenge, follow these steps. First, open the `process.py` file and make the necessary changes marked with `TODO`. When testing your code locally, set `execute_in_docker=False`, but don't forget to switch it back to `execute_in_docker=True` before running the code in the docker container.
 
 If your algorithm requires additional libraries or files, you can modify the `requirements.txt` file and the `Dockerfile` as needed. This will ensure that the required files and folders are copied appropriately. Check out the graphic description of the [MIDOG Challenge](https://github.com/DeepPathology/MIDOG_reference_docker#overview) below.
 
